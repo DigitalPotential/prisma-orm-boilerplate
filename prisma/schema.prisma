@@ -13,6 +13,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// One to many relation
+
 model User {
   id    Int    @id @default(autoincrement())
   name  String
@@ -26,4 +28,40 @@ model Post {
   content  String
   author   User   @relation(fields: [authorId], references: [id])
   authorId Int
+}
+
+// Many to many relation
+model Book {
+  id      Int      @id @default(autoincrement())
+  title   String
+  authors Author[] @relation("BookToAuthor")
+}
+
+model Author {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[] @relation("BookToAuthor")
+}
+
+// One to one relation
+// model User {
+//   id      Int      @id @default(autoincrement())
+//   email   String   @unique
+//   profile Profile?
+// }
+
+// model Profile {
+//   id     Int    @id @default(autoincrement())
+//   bio    String
+//   userId Int    @unique
+//   user   User   @relation(fields: [userId], references: [id])
+// }
+
+// Self relation
+model Employee {
+  id           Int        @id @default(autoincrement())
+  name         String
+  managerId    Int?
+  manager      Employee?  @relation("ManagerToEmployee", fields: [managerId], references: [id])
+  subordinates Employee[] @relation("ManagerToEmployee")
 }
