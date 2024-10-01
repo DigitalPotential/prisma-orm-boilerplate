@@ -14,32 +14,17 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String
-  campaigns Campaign[]
-  createdAt DateTime   @default(now())
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  posts Post[]
 }
 
-model Campaign {
-  id                 String           @id @default(uuid())
-  campaignName       String
-  companyName        String
-  companyDescription String
-  productDescription String
-  targetAudience     String
-  userId             Int
-  user               User             @relation(fields: [userId], references: [id])
-  generatedEmails    GeneratedEmail[]
-  createdAt          DateTime         @default(now())
-}
-
-model GeneratedEmail {
-  id         String   @id @default(uuid())
-  recipients String[]
-  subject    String
-  content    String
-  campaignId String
-  campaign   Campaign @relation(fields: [campaignId], references: [id])
-  createdAt  DateTime @default(now())
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String
+  published Boolean @default(false)
+  authorId  Int
+  author    User    @relation(fields: [authorId], references: [id])
 }
