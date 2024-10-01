@@ -13,55 +13,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// One to many relation
-
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
-  post  Post[]
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  name      String
+  campaigns Campaign[]
+  createdAt DateTime   @default(now())
 }
 
-model Post {
-  id       Int    @id @default(autoincrement())
-  title    String
-  content  String
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId Int
+model Campaign {
+  id                 String           @id @default(uuid())
+  campaignName       String
+  companyName        String
+  companyDescription String
+  productDescription String
+  targetAudience     String
+  userId             Int
+  user               User             @relation(fields: [userId], references: [id])
+  generatedEmails    GeneratedEmail[]
+  createdAt          DateTime         @default(now())
 }
 
-// Many to many relation
-model Book {
-  id      Int      @id @default(autoincrement())
-  title   String
-  authors Author[] @relation("BookToAuthor")
-}
-
-model Author {
-  id    Int    @id @default(autoincrement())
-  name  String
-  books Book[] @relation("BookToAuthor")
-}
-
-// One to one relation
-// model User {
-//   id      Int      @id @default(autoincrement())
-//   email   String   @unique
-//   profile Profile?
-// }
-
-// model Profile {
-//   id     Int    @id @default(autoincrement())
-//   bio    String
-//   userId Int    @unique
-//   user   User   @relation(fields: [userId], references: [id])
-// }
-
-// Self relation
-model Employee {
-  id           Int        @id @default(autoincrement())
-  name         String
-  managerId    Int?
-  manager      Employee?  @relation("ManagerToEmployee", fields: [managerId], references: [id])
-  subordinates Employee[] @relation("ManagerToEmployee")
+model GeneratedEmail {
+  id         String   @id @default(uuid())
+  recipients String[]
+  subject    String
+  content    String
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  createdAt  DateTime @default(now())
 }
